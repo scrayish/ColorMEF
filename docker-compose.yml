@@ -1,0 +1,41 @@
+version: "3"
+services:
+  # Auto activates my trap card
+  entry_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: exposure-fusion-dev
+    ipc: host
+    user: "exposure-fusion"
+    volumes:
+      - ${PWD}/:/workspaces/exposure-fusion
+    deploy:
+      # GPU support
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ "0" ]
+              capabilities: [ gpu ]
+
+  train_service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: exposure-fusion-train
+    ipc: host
+    user: "exposure-fusion"
+    entrypoint: ["/bin/bash"]
+    command: train.sh
+    volumes:
+      - ${PWD}/:/workspaces/exposure-fusion
+    deploy:
+      # GPU support
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ "0" ]
+              capabilities: [ gpu ]
+                
