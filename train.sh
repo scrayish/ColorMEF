@@ -1,20 +1,17 @@
 #!/bin/bash
 
-eval "$(conda shell.bash hook)"
-source activate env_pytorch
-cd /home/worker/Documents/exposure-fusion
 python3 main.py \
 -model transformer \
 -use_cuda True \
 -data_type SAMPLE \
 -train_data \
-/sample/path/train \
+sample/ \
 -test_data \
-/sample/path/test \
+sample/ \
 -output_path \
-/sample/path/output \
+sample/output/ \
 -checkpoint_path \
-/sample/path/checkpoint \
+checkpoints/ \
 -fuse_expos \
 dark middle bright \
 -epochs \

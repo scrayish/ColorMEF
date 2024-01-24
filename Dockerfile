@@ -2,7 +2,7 @@ FROM pytorch/pytorch:2.1.1-cuda12.1-cudnn8-runtime
 
 SHELL ["/bin/bash", "-c"]
 
-ARG USERNAME=exposure-fusion
+ARG USERNAME=colormef
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
@@ -23,7 +23,7 @@ COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
 # Create directories where to mount stuff
-ARG work_dir=/workspaces/exposure-fusion/
+ARG work_dir=/workspaces/ColorMEF/
 ENV WORK_DIR=$work_dir
 
 RUN mkdir -p $work_dir
@@ -31,4 +31,4 @@ RUN mkdir -p $work_dir
 # Activate user?
 USER USERNAME
 
-WORKDIR /workspaces/exposure-fusion/
+WORKDIR /workspaces/ColorMEF/

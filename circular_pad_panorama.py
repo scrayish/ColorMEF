@@ -1,12 +1,12 @@
 """
 
-Semi-scuffed circular padding implementation for panoramas
+Circular padding implementation for panorama images
 
 kernel_size - give kernel size which is used for padding
 padding - either int or tuple of 4 values for padding
 dilation - dilation of kernel for additional padding values
 
-This will only work for 2d convolutions. Other convolutions fuck off. This is for panorama images specifically
+This will only work for 2d convolutions and this is for panorama images specifically
 
 NOTE - This will not quite work with padding modes "same" and "valid". You need to be as specific as possible
 

@@ -5,11 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: exposure-fusion-dev
+    container_name: ColorMEF-dev
     ipc: host
-    user: "exposure-fusion"
+    user: "colormef"
     volumes:
-      - ${PWD}/:/workspaces/exposure-fusion
+      - ${PWD}/:/workspaces/ColorMEF
     deploy:
       # GPU support
       resources:
@@ -23,13 +23,13 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: exposure-fusion-train
+    container_name: ColorMEF-train
     ipc: host
-    user: "exposure-fusion"
-    entrypoint: ["/bin/bash"]
+    user: "colormef"
+    entrypoint: [ "/bin/bash" ]
     command: train.sh
     volumes:
-      - ${PWD}/:/workspaces/exposure-fusion
+      - ${PWD}/:/workspaces/ColorMEF
     deploy:
       # GPU support
       resources:
@@ -38,4 +38,3 @@ services:
             - driver: nvidia
               device_ids: [ "0" ]
               capabilities: [ gpu ]
-                

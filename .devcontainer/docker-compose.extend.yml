@@ -14,7 +14,6 @@ services:
     volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
       - .:/workspaces:cached
-      - /mnt/machine_learning/:/mnt/machine_learning/
 
     # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
     # cap_add:
@@ -31,5 +30,5 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: [ "0", "1" ]
+              device_ids: [ "0" ]
               capabilities: [ gpu ]

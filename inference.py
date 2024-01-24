@@ -65,18 +65,16 @@ def main():
         help="Specify output, else dropping next to data",
     )
 
-    args, _ = parser.parse_known_args()
-
-    # args, _ = parser.parse_known_args(
-    #     [
-    #         "--data-path",
-    #         "/mnt/machine_learning/datasets/exposure_fusion/gcam_test_set",
-    #         "--model-folder",
-    #         "/home/worker/Documents/Matiss/exposure-fusion/checkpoints/run-23-02-01--11-43-47-PAN_G_GT",
-    #         "--output",
-    #         "/mnt/machine_learning/datasets/exposure_fusion/inference_results/",
-    #     ]
-    # )
+    args, _ = parser.parse_known_args(
+        [
+            "--data-path",
+            "./sample",
+            "--model-folder",
+            "./weights/sample",
+            "--output",
+            "./sample/inference_output",
+        ]
+    )
 
     if torch.cuda.is_available():
         device = "cuda"
@@ -94,8 +92,7 @@ def main():
 
     hr_transform = transforms.Compose(
         [
-            BatchTestResolution(
-                10000, interpolation=InterpolationMode.BILINEAR),
+            BatchTestResolution(10000, interpolation=InterpolationMode.BILINEAR),
             BatchToTensor(),
             BatchRGBToYCbCr(),
         ]
@@ -125,25 +122,24 @@ def main():
     image_size = tuple(dataset[0][1]["I_lr"].size()[2:])
 
     # Initialize model:
-    Model = getattr(__import__(
-        "models." + data["model"], fromlist=["Model"]), "Model")
+    Model = getattr(__import__("models." + data["model"], fromlist=["Model"]), "Model")
     if "transformer" in args.model:
         pad_fn = get_padding_function(args.pad)
         model = Model(
-            image_size,
-            args.dimensions,
-            args.heads,
-            int(args.dimensions * 4),
-            1,
-            pad_fn,
-            args.enhance_length,
-            args.readout,
+            image_size=image_size,
+            dim=args.dimensions,
+            heads=args.heads,
+            mlp_dim=int(args.dimensions * 4),
+            padding=1,
+            pad_fn=pad_fn,
+            enhance_layers=args.enhance_length,
+            readout=args.readout,
         ).to(device)
     else:
         model = Model().to(device)
 
     state = torch.load(
-        str(Path(args.model_folder) / "state_epoch_087.tar"), map_location=device
+        str(Path(args.model_folder) / "state_epoch_last.tar"), map_location=device
     )
     model.load_state_dict(state["model_state"])
 
@@ -158,8 +154,7 @@ def main():
         )
         path_result_images = str(Path(path_output_general) / "result-images")
         for w in fuse_expos:
-            os.makedirs(str(Path(path_output_general) /
-                        f"weights-{w}"), exist_ok=True)
+            os.makedirs(str(Path(path_output_general) / f"weights-{w}"), exist_ok=True)
         # Copy run json to folder:
         shutil.copy(
             str(Path(args.model_folder) / "run.json"),
@@ -201,8 +196,7 @@ def main():
 
         # Save image to paths:
         O_hr_RGB = YCbCrToRGB()(
-            torch.cat([o_hr.to("cpu"), o_hr_cb.to(
-                "cpu"), o_hr_cr.to("cpu")], dim=1)
+            torch.cat([o_hr.to("cpu"), o_hr_cb.to("cpu"), o_hr_cr.to("cpu")], dim=1)
         )
         O_hr_RGB = torch.clamp(O_hr_RGB, min=0.0, max=1.0)
         # Fix name:
@@ -214,8 +208,7 @@ def main():
                 save_image_better(
                     weight,
                     str(
-                        Path(path_result_images).parent /
-                        f"weights-{mode}" / name_true
+                        Path(path_result_images).parent / f"weights-{mode}" / name_true
                     ),
                 )
 
