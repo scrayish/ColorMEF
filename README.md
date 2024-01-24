@@ -35,6 +35,12 @@ And then launch train service
 docker compose up train_service
 ```
 
+For training a single example sequence is provided to evaluate working condition of repository. The paths in `train.sh` are setup accordingly. You'll have to modify the paths to your own dataset paths in order to run this training script on your own data.
+
 ## Inference
 
 For inference, you should launch `inference.py` script. The script assumes, you have a working model checkpoint and a `run.json` from training time, in order to load some additional model parameters. Currently inference can be launched only inside dev-container or locally. If you want to create a docker service, you can edit the `docker-compose.yml` file and add additional service for inference
+
+We provide pretrained weights for this model in the link below. Simply download the weights folder and put it into repository. Then inference should run out-of-the-box
+
+https://drive.google.com/drive/folders/1YGNMyua0hS8qRE5B3Ec7JcK3waMwlTl2?usp=sharing
